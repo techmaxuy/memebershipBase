@@ -1,6 +1,6 @@
 'use server'
 
-import { prisma } from '@/lib/db'
+import { prisma } from '@/core/shared/lib/db'
 import { auth } from '@/../auth'
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'

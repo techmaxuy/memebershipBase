@@ -1,10 +1,10 @@
 // src/auth.ts
 import NextAuth from "next-auth"
 import { authConfig } from "./auth.config"
-import { prisma } from "@/lib/db"
-import { verifyPassword } from "@/lib/password"
+import { prisma } from "@/core/shared/lib/db"
+import { verifyPassword } from "@/core/auth/lib/password"
 import { cookies } from "next/headers"
-import { ConditionalPrismaAdapter } from "@/lib/auth-adapter"
+import { ConditionalPrismaAdapter } from "@/core/auth/lib/auth-adapter"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig,

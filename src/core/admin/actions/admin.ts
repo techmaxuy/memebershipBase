@@ -1,7 +1,7 @@
 'use server'
 
-import { prisma } from '@/lib/db'
-import { hashPassword } from '@/lib/password'
+import { prisma } from '@/core/shared/lib/db'
+import { hashPassword } from '@/core/auth/lib/password'
 import { auth } from '@/../auth'
 import { z } from 'zod'
 

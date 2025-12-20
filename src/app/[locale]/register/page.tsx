@@ -1,6 +1,6 @@
-import { RegisterForm } from "@/components/auth/RegisterForm";
+import { RegisterForm } from "@/core/auth/components/RegisterForm";
 import { getTranslations } from 'next-intl/server';
-import { AuthErrorMessage } from "@/components/auth/AuthErrorMessage"
+import { AuthErrorMessage } from "@/core/auth/components/AuthErrorMessage"
 
 interface RegisterPageProps {
     params: Promise<{ locale: string }>

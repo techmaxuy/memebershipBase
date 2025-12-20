@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { Settings as SettingsIcon, Globe, Save, Upload, X, Loader2, Image as ImageIcon } from 'lucide-react'
 import Image from 'next/image'
-import { updateSettings } from '@/actions/settings'
+import { updateSettings } from '@/core/admin/actions/settings'
 
 interface SettingsFormProps {
   settings: {

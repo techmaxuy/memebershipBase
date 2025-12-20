@@ -4,10 +4,10 @@ import { signIn, signOut } from "@/../auth"
 import { LoginSchema, RegisterSchema } from "@/schemas/auth"
 import { AuthError } from "next-auth"
 import { z } from "zod"
-import { prisma } from "@/lib/db"
-import { hashPassword } from "@/lib/password"
+import { prisma } from "@/core/shared/lib/db"
+import { hashPassword } from "@/core/auth/lib/password"
 import { cookies } from "next/headers"
-import { sendVerificationEmail } from "@/lib/email"
+import { sendVerificationEmail } from "@/core/shared/lib/email"
 import crypto from "crypto"
 
 export const login = async (values: z.infer<typeof LoginSchema>, locale: string) => {

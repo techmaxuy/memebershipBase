@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
-import { createFirstAdmin } from '@/actions/admin'
+import { createFirstAdmin } from '@/core/admin/actions/admin'
 import { Eye, EyeOff, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 

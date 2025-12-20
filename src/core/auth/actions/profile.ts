@@ -1,12 +1,12 @@
 'use server'
 
 import { auth } from '@/../auth'
-import { prisma } from '@/lib/db'
-import { hashPassword, verifyPassword } from '@/lib/password'
+import { prisma } from '@/core/shared/lib/db'
+import { hashPassword, verifyPassword } from '@/core/auth/lib/password'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import crypto from 'crypto'
-import { sendVerificationEmail } from '@/lib/email'
+import { sendVerificationEmail } from '@/core/shared/lib/email'
 
 // Schema de validación para actualizar nombre
 const UpdateNameSchema = z.object({

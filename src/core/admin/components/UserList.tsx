@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { Search, Filter, ChevronLeft, ChevronRight, Shield, ShieldOff, Trash2, MoreVertical, Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import { changeUserRole, deleteUser } from '@/actions/admin'
+import { changeUserRole, deleteUser } from '@/core/admin/actions/admin'
 
 interface User {
   id: string

@@ -1,7 +1,7 @@
 import { auth } from "../../../auth";
 import { getTranslations } from 'next-intl/server';
 import { UserMenu } from '@/components/UserMenu';
-import { getSettings } from '@/actions/settings';
+import { getSettings } from '@/core/admin/actions/settings';
 import Image from 'next/image';
 
 interface HomePageProps {

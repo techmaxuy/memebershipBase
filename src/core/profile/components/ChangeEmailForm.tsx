@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
-import { changeEmail } from '@/actions/profile'
+import { changeEmail } from '@/core/auth/actions/profile'
 import { Mail, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react'
 
 interface ChangeEmailFormProps {

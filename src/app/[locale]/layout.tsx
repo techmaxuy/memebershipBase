@@ -5,7 +5,7 @@ import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
-import { SuccessBanner } from "@/components/auth/SuccessBanner";
+import { SuccessBanner } from "@/core/auth/components/SuccessBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

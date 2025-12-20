@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 import { Mail, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react'
-import { resendVerificationEmail } from '@/actions/auth'
+import { resendVerificationEmail } from '@/core/auth/actions/auth'
 
 interface VerifyEmailBannerProps {
   email: string

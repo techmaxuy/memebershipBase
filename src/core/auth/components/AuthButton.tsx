@@ -1,5 +1,5 @@
 
-import { signIn } from "../../../auth"
+import { signIn } from "../../../../auth"
 import { cookies } from "next/headers"
 
 interface AuthButtonProps {

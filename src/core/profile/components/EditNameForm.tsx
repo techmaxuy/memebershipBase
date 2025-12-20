@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
-import { updateName } from '@/actions/profile'
+import { updateName } from '@/core/auth/actions/profile'
 import { Pencil, Check, X, Loader2 } from 'lucide-react'
 
 interface EditNameFormProps {

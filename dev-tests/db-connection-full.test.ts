@@ -1,6 +1,6 @@
 // dev-tests/db-connection-full.test.ts
 //import 'dotenv/config'
-import { prisma } from '../src/lib/db'
+import { prisma } from '../src/core/shared/lib/db'
 
 interface TestResult {
   name: string

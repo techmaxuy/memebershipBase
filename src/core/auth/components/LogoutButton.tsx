@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react'
 import { useTranslations } from 'next-intl'
-import { logout } from '@/actions/auth'
+import { logout } from '@/core/auth/actions/auth'
 import { Loader2, LogOut } from 'lucide-react'
 
 interface LogoutButtonProps {

@@ -1,6 +1,6 @@
 // src/lib/auth-adapter.ts
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { prisma } from "@/lib/db"
+import { prisma } from "@/core/shared/lib/db"
 import type { Adapter, AdapterUser } from "next-auth/adapters"
 import { cookies } from "next/headers"
 

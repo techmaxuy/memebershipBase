@@ -1,5 +1,5 @@
-import { requireAdmin } from '@/lib/auth-helpers'
-import { prisma } from '@/lib/db'
+import { requireAdmin } from '@/core/auth/lib/auth-helpers'
+import { prisma } from '@/core/shared/lib/db'
 import { getTranslations } from 'next-intl/server'
 import { Users, UserCheck, ShieldAlert, Calendar } from 'lucide-react'
 import Link from 'next/link'

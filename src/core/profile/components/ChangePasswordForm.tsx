@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
-import { changePassword } from '@/actions/profile'
+import { changePassword } from '@/core/auth/actions/profile'
 import { Lock, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react'
 
 interface ChangePasswordFormProps {

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { User, LogOut, UserCircle, Settings, Globe, ChevronDown, ShieldAlert } from 'lucide-react'
 import { Link } from '@/i18n/routing'
-import { LogoutButton } from './auth/LogoutButton'
+import { LogoutButton } from '../core/auth/components/LogoutButton'
 import Image from 'next/image'
 
 interface UserMenuProps {

@@ -1,50 +1,51 @@
 "use client"
 
 import { useTransition, useState } from "react";
-import { login, socialLogin } from "@/actions/auth";
+import { register, socialLogin } from "@/core/auth/actions/auth";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { FaGithub, FaGoogle, FaMicrosoft } from "react-icons/fa";
 import { AlertCircle } from "lucide-react";
 import { VerifyEmailBanner } from "./VerifyEmailBanner";
 
-interface LoginFormProps {
+interface RegisterFormProps {
     locale: string;
 }
 
-export function LoginForm({ locale }: LoginFormProps) {
+export function RegisterForm({ locale }: RegisterFormProps) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | undefined>("");
-    const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
-    const t = useTranslations('LoginPage');
+    const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
+    const t = useTranslations('RegisterPage');
     const tErrors = useTranslations('AuthErrors');
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError("");
-        setUnverifiedEmail(null);
         const formData = new FormData(event.currentTarget);
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
+        const confirmPassword = formData.get("confirmPassword") as string;
+
+        if (password !== confirmPassword) {
+            setError(t('passwordsDoNotMatch'));
+            return;
+        }
 
         startTransition(() => {
-            login({ email, password }, locale)
+            register({ email, password, confirmPassword }, locale)
                 .then((data) => {
                     if (data?.error) {
-                        // Si el error es email no verificado, mostrar banner
-                        if (data.error === "EmailNotVerified" && data.email) {
-                            setUnverifiedEmail(data.email);
-                        } else {
-                            const errorMessages: Record<string, string> = {
-                                InvalidFields: tErrors('invalidFields'),
-                                UserNotFound: tErrors('userNotFound'),
-                                UseOAuthProvider: tErrors('useOAuthProvider'),
-                                InvalidPassword: tErrors('invalidPassword'),
-                                DatabaseError: tErrors('databaseError'),
-                                AuthError: tErrors('authError'),
-                            }
-                            setError(errorMessages[data.error] || tErrors('unknownError'));
+                        const errorMessages: Record<string, string> = {
+                            InvalidFields: tErrors('invalidFields'),
+                            AlreadyRegistered: tErrors('alreadyRegistered'),
+                            DatabaseError: tErrors('databaseError'),
+                            AutoLoginFailed: tErrors('autoLoginFailed'),
                         }
+                        setError(errorMessages[data.error] || tErrors('unknownError'));
+                    } else if (data?.requiresVerification && data?.email) {
+                        // Mostrar banner de verificación
+                        setRegisteredEmail(data.email);
                     }
                 });
         });
@@ -52,23 +53,13 @@ export function LoginForm({ locale }: LoginFormProps) {
 
     const handleSocialLogin = (provider: "google" | "github" | "microsoft-entra-id") => {
         startTransition(() => {
-            socialLogin(provider, 'login', locale);
+            socialLogin(provider, 'register', locale);
         });
     };
 
-    // Si el email no está verificado, mostrar banner
-    if (unverifiedEmail) {
-        return (
-            <div className="space-y-6">
-                <VerifyEmailBanner email={unverifiedEmail} locale={locale} />
-                <button
-                    onClick={() => setUnverifiedEmail(null)}
-                    className="w-full text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                >
-                    ← {t('backToLogin') || 'Back to login'}
-                </button>
-            </div>
-        )
+    // Si el usuario se registró, mostrar banner de verificación
+    if (registeredEmail) {
+        return <VerifyEmailBanner email={registeredEmail} locale={locale} />
     }
 
     return (
@@ -97,6 +88,21 @@ export function LoginForm({ locale }: LoginFormProps) {
                         name="password"
                         required
                         disabled={isPending}
+                        minLength={6}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                    />
+                </div>
+                
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {t('confirmPassword')}
+                    </label>
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        required
+                        disabled={isPending}
+                        minLength={6}
                         className="w-full px-3 py-2 border border-gray-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                     />
                 </div>
@@ -113,7 +119,7 @@ export function LoginForm({ locale }: LoginFormProps) {
                     disabled={isPending}
                     className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {isPending ? t('signingIn') : t('signInButton')}
+                    {isPending ? t('creatingAccount') : t('registerButton')}
                 </button>
             </form>
 
@@ -137,7 +143,7 @@ export function LoginForm({ locale }: LoginFormProps) {
                     className="flex items-center justify-center w-full gap-2 px-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <FaGoogle className="w-5 h-5" />
-                    <span>{t('signInWith', { provider: 'Google' })}</span>
+                    <span>{t('signUpWith', { provider: 'Google' })}</span>
                 </button>
                 
                 <button
@@ -146,7 +152,7 @@ export function LoginForm({ locale }: LoginFormProps) {
                     className="flex items-center justify-center w-full gap-2 px-4 py-2.5 bg-[#24292F] text-white rounded-lg hover:bg-[#24292F]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <FaGithub className="w-5 h-5" />
-                    <span>{t('signInWith', { provider: 'GitHub' })}</span>
+                    <span>{t('signUpWith', { provider: 'GitHub' })}</span>
                 </button>
                 
                 <button
@@ -155,14 +161,14 @@ export function LoginForm({ locale }: LoginFormProps) {
                     className="flex items-center justify-center w-full gap-2 px-4 py-2.5 bg-[#0078D4] text-white rounded-lg hover:bg-[#0078D4]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <FaMicrosoft className="w-5 h-5" />
-                    <span>{t('signInWith', { provider: 'Microsoft' })}</span>
+                    <span>{t('signUpWith', { provider: 'Microsoft' })}</span>
                 </button>
             </div>
 
             {/* Footer Links */}
             <div className="flex flex-col gap-2 text-center text-sm">
-                <Link href="/register" className="text-blue-600 hover:underline dark:text-blue-400">
-                    {t('registerLink')}
+                <Link href="/login" className="text-blue-600 hover:underline dark:text-blue-400">
+                    {t('loginLink')}
                 </Link>
                 <Link href="/" className="text-gray-600 dark:text-gray-400 hover:underline">
                     {t('backToHome')}

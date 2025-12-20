@@ -1,14 +1,14 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/../auth'
-import { getCurrentProfile } from '@/actions/profile'
+import { getCurrentProfile } from '@/core/auth/actions/profile'
 import { getTranslations } from 'next-intl/server'
-import { AvatarUpload } from '@/components/profile/AvatarUpload'
-import { EditNameForm } from '@/components/profile/EditNameForm'
-import { ChangePasswordForm } from '@/components/profile/ChangePasswordForm'
-import { ChangeEmailForm } from '@/components/profile/ChangeEmailForm'
+import { AvatarUpload } from '@/core/profile/components/AvatarUpload'
+import { EditNameForm } from '@/core/profile/components/EditNameForm'
+import { ChangePasswordForm } from '@/core/profile/components/ChangePasswordForm'
+import { ChangeEmailForm } from '@/core/profile/components/ChangeEmailForm'
 import { Shield, Calendar, Mail, User as UserIcon, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { LogoutButton } from '@/components/auth/LogoutButton'
+import { LogoutButton } from '@/core/auth/components/LogoutButton'
 
 interface ProfilePageProps {
   params: Promise<{ locale: string }>

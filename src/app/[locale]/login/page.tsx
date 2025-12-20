@@ -1,6 +1,6 @@
-import { LoginForm } from "@/components/auth/LoginForm";
+import { LoginForm } from "@/core/auth/components/LoginForm";
 import { getTranslations } from 'next-intl/server';
-import { AuthErrorMessage } from "@/components/auth/AuthErrorMessage"
+import { AuthErrorMessage } from "@/core/auth/components/AuthErrorMessage"
 
 interface LoginPageProps {
     params: Promise<{ locale: string }>

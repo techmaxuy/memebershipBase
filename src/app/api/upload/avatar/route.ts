@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/../auth'
-import { uploadImage, deleteImage } from '@/lib/azure-storage'
-import { prisma } from '@/lib/db'
+import { uploadImage, deleteImage } from '@/core/shared/lib/azure-storage'
+import { prisma } from '@/core/shared/lib/db'
 
 export const runtime = 'nodejs' // Necesario para sharp
 

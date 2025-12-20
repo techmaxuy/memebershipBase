@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/db'
+import { prisma } from '@/core/shared/lib/db'
 import { getTranslations } from 'next-intl/server'
-import { SetupForm } from '@/components/admin/SetupForm'
+import { SetupForm } from '@/core/admin/components/SetupForm'
 import { Shield, AlertTriangle } from 'lucide-react'
 
 interface SetupPageProps {

@@ -1,7 +1,7 @@
-import { requireAdmin } from '@/lib/auth-helpers'
-import { getSettings } from '@/actions/settings'
+import { requireAdmin } from '@/core/auth/lib/auth-helpers'
+import { getSettings } from '@/core/admin/actions/settings'
 import { getTranslations } from 'next-intl/server'
-import { SettingsForm } from '@/components/admin/SettingsForm'
+import { SettingsForm } from '@/core/admin/components/SettingsForm'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 

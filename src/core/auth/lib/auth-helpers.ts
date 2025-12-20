@@ -2,7 +2,7 @@
 import { auth } from '@/../auth'
 import { Role } from '@prisma/client'
 import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/db'
+import { prisma } from '@/core/shared/lib/db'
 
 /**
  * Obtiene la sesión actual del servidor
