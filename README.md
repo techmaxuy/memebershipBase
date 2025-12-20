@@ -333,29 +333,29 @@ npx prisma migrate dev --name add_mi_feature
 
 Sigue los patrones establecidos en `src/core/` para mantener consistencia.
 
-🔄 ACTUALIZACIÓN DEL CORE
+### 5. ACTUALIZACIÓN DEL CORE
 Cuando mejores el sistema de autenticación en el template:
 
-# En el template base
+En el template base
 git add core/
 git commit -m "feat: mejorar sistema de verificación email"
 git push origin main
 git tag v1.1.0
 git push --tags
 
-# En cada aplicación existente (opcional)
-# 1. Agregar el template como remote
+En cada aplicación existente (opcional)
+Agregar el template como remote
 git remote add template https://github.com/tu-usuario/memberbase-template.git
 
-# 2. Fetch cambios
+Fetch cambios
 git fetch template
 
-# 3. Merge solo la carpeta core (cherry-pick)
+Merge solo la carpeta core (cherry-pick)
 git checkout template/main -- src/core/
 git commit -m "chore: actualizar core desde template v1.1.0"
 
-# 4. Resolver conflictos si los hay
-# 5. Probar que todo funcione
+Resolver conflictos si los hay
+Probar que todo funcione
 npm run dev
 
 ---
