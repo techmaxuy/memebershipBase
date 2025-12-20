@@ -337,26 +337,35 @@ Sigue los patrones establecidos en `src/core/` para mantener consistencia.
 Cuando mejores el sistema de autenticación en el template:
 
 En el template base
+```bash
 git add core/
 git commit -m "feat: mejorar sistema de verificación email"
 git push origin main
 git tag v1.1.0
 git push --tags
-
+```
 En cada aplicación existente (opcional)
 Agregar el template como remote
+```bash
 git remote add template https://github.com/tu-usuario/memberbase-template.git
+```
 
 Fetch cambios
+```bash
 git fetch template
+```
 
 Merge solo la carpeta core (cherry-pick)
+```bash
 git checkout template/main -- src/core/
 git commit -m "chore: actualizar core desde template v1.1.0"
+```
 
 Resolver conflictos si los hay
 Probar que todo funcione
+```bash
 npm run dev
+```
 
 ---
 
