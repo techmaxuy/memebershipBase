@@ -512,7 +512,7 @@ const handleBackgroundDesktopDelete = async () => {
             </div>
 
 
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-zinc-700">
+         
             <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-4">
               {t('backgroundImages')}
             </h3>
@@ -570,7 +570,7 @@ const handleBackgroundDesktopDelete = async () => {
                     </label>
                   </div>
                 )}
-              </div>
+         
             </div>
           </div>
           </div>
