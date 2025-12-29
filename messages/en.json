@@ -284,6 +284,13 @@
       "DeleteFailed": "Failed to delete file",
       "NoLogo": "No logo to delete",
       "NoFavicon": "No favicon to delete"
-    }
+    },
+    "backgroundImages":"Background Images",
+    "backgroundImageMobile":"Background Image (Mobile)",
+    "removeBackgroundMobile":"Remove Mobile Background",
+    "uploadBackgroundMobile":"Upload Mobile Background",
+    "backgroundImageDesktop":"Background Image (Desktop)",
+    "removeBackgroundDesktop":"Remove Desktop Background",
+    "uploadBackgroundDesktop":"Upload Desktop Background"
   }
 }

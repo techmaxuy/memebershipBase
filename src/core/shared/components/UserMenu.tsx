@@ -34,6 +34,7 @@ export function UserMenu({ user, locale, isAuthenticated }: UserMenuProps) {
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       return () => document.removeEventListener('mousedown', handleClickOutside)
+      
     }
   }, [isOpen])
 
@@ -115,15 +116,6 @@ export function UserMenu({ user, locale, isAuthenticated }: UserMenuProps) {
                     {t('adminDashboard')}
                   </Link>
                 )}
-
-                <Link
-                  href="/settings"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
-                >
-                  <Settings className="w-4 h-4" />
-                  {t('settings')}
-                </Link>
               </div>
 
               {/* Language Switcher */}

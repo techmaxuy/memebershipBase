@@ -23,6 +23,11 @@ export interface UploadOptions {
   quality?: number // Calidad JPEG (1-100)
 }
 
+export interface UploadAudioOptions {
+  folder?: string // Ej: 'audio', 'music'
+}
+
+
 /**
  * Sube una imagen a Azure Blob Storage
  */
@@ -160,5 +165,71 @@ export async function listImages(folder: string = 'uploads', limit: number = 100
   } catch (error) {
     console.error('[Azure] ❌ List error:', error)
     return []
+  }
+}
+
+/**
+ * Elimina un archivo de audio de Azure Blob Storage
+ * NUEVA FUNCIÓN (alias de deleteImage para claridad)
+ */
+export async function deleteAudio(audioUrl: string): Promise<boolean> {
+  return deleteImage(audioUrl)
+}
+
+
+/**
+ * Sube un archivo de audio a Azure Blob Storage
+ * NUEVA FUNCIÓN
+ */
+export async function uploadAudio(
+  file: File,
+  options: UploadAudioOptions = {}
+): Promise<string> {
+  try {
+    const { folder = 'audio' } = options
+
+    // Validar tipo de archivo (audio)
+    const validAudioTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a']
+    const isValidAudio = validAudioTypes.some(type => file.type.includes(type.split('/')[1]))
+    
+    if (!isValidAudio && !file.type.startsWith('audio/')) {
+      throw new Error('File must be an audio file (MP3, WAV, OGG, M4A)')
+    }
+
+    // Validar tamaño (max 10MB para audio)
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSize) {
+      throw new Error('Audio file size must be less than 10MB')
+    }
+
+    // Convertir File a Buffer
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    // Generar nombre único
+    const timestamp = Date.now()
+    const randomString = Math.random().toString(36).substring(7)
+    const extension = file.name.split('.').pop() || 'mp3'
+    const blobName = `${folder}/${timestamp}-${randomString}.${extension}`
+
+    // Subir a Azure
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName)
+    
+    await blockBlobClient.uploadData(buffer, {
+      blobHTTPHeaders: {
+        blobContentType: file.type || 'audio/mpeg',
+        blobCacheControl: 'public, max-age=31536000', // Cache 1 año
+      },
+    })
+
+    // Retornar URL pública
+    const url = blockBlobClient.url
+    
+    console.log(`[Azure] ✅ Audio uploaded: ${url}`)
+    
+    return url
+  } catch (error) {
+    console.error('[Azure] ❌ Audio upload error:', error)
+    throw error
   }
 }

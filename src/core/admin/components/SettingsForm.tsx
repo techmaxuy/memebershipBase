@@ -16,6 +16,8 @@ interface SettingsFormProps {
     logo: string | null
     favicon: string | null
     defaultLocale: string
+    backgroundImageMobile: string | null 
+    backgroundImageDesktop: string | null 
   }
   locale: string
 }
@@ -34,6 +36,8 @@ export function SettingsForm({ settings, locale }: SettingsFormProps) {
   // Image upload state
   const [uploadingLogo, setUploadingLogo] = useState(false)
   const [uploadingFavicon, setUploadingFavicon] = useState(false)
+  const [uploadingBgMobile, setUploadingBgMobile] = useState(false)
+  const [uploadingBgDesktop, setUploadingBgDesktop] = useState(false)
   
   // Messages
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
@@ -171,6 +175,77 @@ const handleFaviconDelete = async () => {
   }
 
   setUploadingFavicon(false)
+}
+
+// Handlers para Mobile
+const handleBackgroundMobileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+  setUploadingBgMobile(true)
+  const formData = new FormData()
+  formData.append('file', file)
+  try {
+    const response = await fetch('/api/upload/background-mobile', {
+      method: 'POST',
+      body: formData,
+    })
+    const result = await response.json()
+    if (!response.ok) throw new Error(result.error)
+    setMessage({ type: 'success', text: t('bgMobileUploaded') })
+    router.refresh()
+  } catch {
+    setMessage({ type: 'error', text: t('errors.UploadFailed') })
+  }
+  setUploadingBgMobile(false)
+}
+
+const handleBackgroundMobileDelete = async () => {
+  if (!confirm(t('confirmDeleteBgMobile'))) return
+  setUploadingBgMobile(true)
+  try {
+    const response = await fetch('/api/upload/background-mobile', { method: 'DELETE' })
+    if (!response.ok) throw new Error()
+    setMessage({ type: 'success', text: t('bgMobileDeleted') })
+    router.refresh()
+  } catch {
+    setMessage({ type: 'error', text: t('errors.DeleteFailed') })
+  }
+  setUploadingBgMobile(false)
+}
+
+const handleBackgroundDesktopUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+  setUploadingBgDesktop(true)
+  const formData = new FormData()
+  formData.append('file', file)
+  try {
+    const response = await fetch('/api/upload/background-desktop', {
+      method: 'POST',
+      body: formData,
+    })
+    const result = await response.json()
+    if (!response.ok) throw new Error(result.error)
+    setMessage({ type: 'success', text: t('bgDesktopUploaded') })
+    router.refresh()
+  } catch {
+    setMessage({ type: 'error', text: t('errors.UploadFailed') })
+  }
+  setUploadingBgDesktop(false)
+}
+
+const handleBackgroundDesktopDelete = async () => {
+  if (!confirm(t('confirmDeleteBgDesktop'))) return
+  setUploadingBgDesktop(true)
+  try {
+    const response = await fetch('/api/upload/background-desktop', { method: 'DELETE' })
+    if (!response.ok) throw new Error()
+    setMessage({ type: 'success', text: t('bgDesktopDeleted') })
+    router.refresh()
+  } catch {
+    setMessage({ type: 'error', text: t('errors.DeleteFailed') })
+  }
+  setUploadingBgDesktop(false)
 }
 
   return (
@@ -435,6 +510,69 @@ const handleFaviconDelete = async () => {
                 {t('faviconInfo')}
               </p>
             </div>
+
+
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-zinc-700">
+            <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-4">
+              {t('backgroundImages')}
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Mobile Background */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  {t('backgroundImageMobile')}
+                </label>
+                {settings.backgroundImageMobile ? (
+                  <div className="space-y-3">
+                    <div className="relative w-full h-32 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                      <Image src={settings.backgroundImageMobile} alt="Mobile BG" fill className="object-cover" />
+                    </div>
+                    <button type="button" onClick={handleBackgroundMobileDelete} disabled={uploadingBgMobile} 
+                      className="w-full px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+                      {uploadingBgMobile ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+                      {t('removeBackgroundMobile')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <input type="file" accept="image/*" onChange={handleBackgroundMobileUpload} 
+                      disabled={uploadingBgMobile} className="hidden" id="bg-mobile-upload" />
+                    <label htmlFor="bg-mobile-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500">
+                      {uploadingBgMobile ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Upload className="w-8 h-8 text-gray-400 mb-2" /><span className="text-sm">{t('uploadBackgroundMobile')}</span></>}
+                    </label>
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop Background (similar) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  {t('backgroundImageDesktop')}
+                </label>
+                {settings.backgroundImageDesktop ? (
+                  <div className="space-y-3">
+                    <div className="relative w-full h-32 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                      <Image src={settings.backgroundImageDesktop} alt="Desktop BG" fill className="object-cover" />
+                    </div>
+                    <button type="button" onClick={handleBackgroundDesktopDelete} disabled={uploadingBgDesktop} 
+                      className="w-full px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+                      {uploadingBgDesktop ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+                      {t('removeBackgroundDesktop')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <input type="file" accept="image/*" onChange={handleBackgroundDesktopUpload} 
+                      disabled={uploadingBgDesktop} className="hidden" id="bg-desktop-upload" />
+                    <label htmlFor="bg-desktop-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500">
+                      {uploadingBgDesktop ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Upload className="w-8 h-8 text-gray-400 mb-2" /><span className="text-sm">{t('uploadBackgroundDesktop')}</span></>}
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
           </div>
         </div>
 
