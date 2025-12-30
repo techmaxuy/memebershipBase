@@ -510,7 +510,7 @@ const handleBackgroundDesktopDelete = async () => {
                 {t('faviconInfo')}
               </p>
             </div>
-
+          </div>
 
             
 
@@ -581,7 +581,7 @@ const handleBackgroundDesktopDelete = async () => {
                 </div>
               </div>
            
-          </div>
+          
         </div>
 
         {/* Submit Button */}
