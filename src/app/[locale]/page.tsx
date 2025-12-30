@@ -40,7 +40,7 @@ export default async function Home({ params, searchParams }: HomePageProps) {
   console.log('🔍 Session:', session ? 'logged in' : 'guest')
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-black dark:via-zinc-900 dark:to-black">
+    <div className="min-h-screen">
       {success && (
         <div className="bg-green-500 text-white px-4 py-3 text-center font-medium">
           {t('accountCreated')}
@@ -84,38 +84,39 @@ export default async function Home({ params, searchParams }: HomePageProps) {
 
       {/* Main Content */}
       <main className="relative min-h-[80vh]">
-        <div className="fixed inset-0 w-full h-full -z-10">
-          {/* Mobile */}
-          {bgMobile && (
-            <Image
-              src={bgMobile}
-              alt="Background Mobile"
-              fill
-              priority
-              quality={85}
-              className="md:hidden object-cover"
-              style={{ filter: 'brightness(0.6)' }}
-              sizes="100vw"
-            />
-          )}
-          
-          {/* Desktop */}
-          {bgDesktop && (
-            <Image
-              src={bgDesktop}
-              alt="Background Desktop"
-              fill
-              priority
-              quality={85}
-              className="hidden md:block object-cover"
-              style={{ filter: 'brightness(0.6)' }}
-              sizes="100vw"
-            />
-          )}
-          
-          {/* Overlay oscuro */}
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
+        {/* FONDO GLOBAL - Fuera de todo, al mismo nivel que el root */}
+          <div className="fixed inset-0 w-screen h-screen -z-50">
+            {/* Mobile */}
+            {bgMobile && (
+              <Image
+                src={bgMobile}
+                alt="Background Mobile"
+                fill
+                priority
+                quality={85}
+                className="md:hidden object-cover"
+                style={{ filter: 'brightness(0.6)' }}
+                sizes="100vw"
+              />
+            )}
+            
+            {/* Desktop */}
+            {bgDesktop && (
+              <Image
+                src={bgDesktop}
+                alt="Background Desktop"
+                fill
+                priority
+                quality={85}
+                className="hidden md:block object-cover"
+                style={{ filter: 'brightness(0.6)' }}
+                sizes="100vw"
+              />
+            )}
+            
+            {/* Overlay oscuro */}
+            <div className="absolute inset-0 bg-black/40" />
+          </div>
 
         {/* CONTENIDO - Dentro del max-w-7xl */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
