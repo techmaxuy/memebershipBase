@@ -79,54 +79,69 @@ export default async function Home({ params, searchParams }: HomePageProps) {
 
       {/* Main Content */}
       <main className="relative min-h-[80vh]">
-  {/* FONDO GLOBAL - Fuera del contenedor con max-w para ocupar todo el ancho */}
-  <div className="absolute inset-0 -z-10 overflow-hidden">
-    <div className="absolute inset-0 md:hidden bg-cover bg-center" 
-      style={{ backgroundImage: `url(${bgMobile})` }} />
-    <div className="absolute inset-0 hidden md:block bg-cover bg-center" 
-      style={{ backgroundImage: `url(${bgDesktop})` }} />
-    <div className="absolute inset-0 bg-black/40" />
-  </div>
+        {/* FONDO GLOBAL - Con dimensiones explícitas */}
+        <div className="absolute inset-0 w-full h-full -z-10">
+          {/* Mobile */}
+          <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat md:hidden"
+            style={{ 
+              backgroundImage: `url(${bgMobile})`,
+              backgroundAttachment: 'fixed'
+            }}
+          />
+          
+          {/* Desktop */}
+          <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat hidden md:block"
+            style={{ 
+              backgroundImage: `url(${bgDesktop})`,
+              backgroundAttachment: 'fixed'
+            }}
+          />
+          
+          {/* Overlay */}
+          <div className="absolute inset-0 w-full h-full bg-black/40" />
+        </div>
 
-  {/* CONTENIDO - Dentro del max-w-7xl */}
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div className="space-y-8">
-      {!session ? (
-        // Usuario NO autenticado
-        <div className="text-center space-y-6">
-          <h2 className="text-5xl font-bold text-gray-900 dark:text-white">
-            {welcomeMessage}
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            {locale === 'es' 
-              ? 'Inicia sesión o regístrate para comenzar' 
-              : 'Sign in or register to get started'}
-          </p>
-        </div>
-      ) : (
-        // Usuario autenticado
-        <div className="text-center space-y-6">
-          <div className="inline-block p-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-4">
-            <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+        {/* CONTENIDO - Dentro del max-w-7xl */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="space-y-8">
+            {!session ? (
+              // Usuario NO autenticado
+              <div className="text-center space-y-6">
+                <h2 className="text-5xl font-bold text-gray-900 dark:text-white">
+                  {welcomeMessage}
+                </h2>
+                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                  {locale === 'es' 
+                    ? 'Inicia sesión o regístrate para comenzar' 
+                    : 'Sign in or register to get started'}
+                </p>
+              </div>
+            ) : (
+              // Usuario autenticado
+              <div className="text-center space-y-6">
+                <div className="inline-block p-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-4">
+                  <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
+                  {t('userWelcome', { 
+                    name: session.user?.name || 'User', 
+                    role: session.user?.role || 'User' 
+                  })}
+                </h2>
+                <p className="text-xl text-gray-600 dark:text-gray-400">
+                  {locale === 'es' 
+                    ? '¡Todo está listo para comenzar!' 
+                    : 'Everything is ready to get started!'}
+                </p>
+              </div>
+            )}
           </div>
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
-            {t('userWelcome', { 
-              name: session.user?.name || 'User', 
-              role: session.user?.role || 'User' 
-            })}
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400">
-            {locale === 'es' 
-              ? '¡Todo está listo para comenzar!' 
-              : 'Everything is ready to get started!'}
-          </p>
         </div>
-      )}
-    </div>
-  </div>
-</main>
+      </main>
     </div>
   );
 }
