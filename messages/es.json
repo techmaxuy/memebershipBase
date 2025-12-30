@@ -292,7 +292,14 @@
       "DeleteFailed": "Error al eliminar archivo",
       "NoLogo": "No hay logo para eliminar",
       "NoFavicon": "No hay favicon para eliminar"
-    }
+    },
+    "backgroundImages": "Imágenes de fondo",
+    "backgroundImageMobile": "Móvil",
+    "removeBackgroundMobile": "Eliminar",
+    "uploadBackgroundMobile": "Subir",
+    "backgroundImageDesktop": "Escritorio",
+    "removeBackgroundDesktop": "Eliminar",
+    "uploadBackgroundDesktop": "Subir"
   }
 
 }
