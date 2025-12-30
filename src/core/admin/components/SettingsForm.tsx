@@ -514,7 +514,7 @@ const handleBackgroundDesktopDelete = async () => {
 
             
 
-              
+              <div className="flex items-center gap-3 mb-6"></div>
                 <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
                   <ImageIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
@@ -522,6 +522,7 @@ const handleBackgroundDesktopDelete = async () => {
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     {t('backgroundImages')}
                   </h2>
+                </div>
                 </div>
               
             
