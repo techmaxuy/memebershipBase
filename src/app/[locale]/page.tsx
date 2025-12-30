@@ -84,33 +84,38 @@ export default async function Home({ params, searchParams }: HomePageProps) {
 
       {/* Main Content */}
       <main className="relative min-h-[80vh]">
-        <div className="absolute inset-0 -z-10">
-    {/* Mobile */}
-    {bgMobile && (
-      <Image
-        src={bgMobile}
-        alt="Background Mobile"
-        fill
-        priority
-        quality={85}
-        className="md:hidden object-cover"
-        style={{ filter: 'brightness(0.6)' }}
-      />
-    )}
-    
-    {/* Desktop */}
-    {bgDesktop && (
-      <Image
-        src={bgDesktop}
-        alt="Background Desktop"
-        fill
-        priority
-        quality={85}
-        className="hidden md:block object-cover"
-        style={{ filter: 'brightness(0.6)' }}
-      />
-    )}
-  </div>
+        <div className="fixed inset-0 w-full h-full -z-10">
+          {/* Mobile */}
+          {bgMobile && (
+            <Image
+              src={bgMobile}
+              alt="Background Mobile"
+              fill
+              priority
+              quality={85}
+              className="md:hidden object-cover"
+              style={{ filter: 'brightness(0.6)' }}
+              sizes="100vw"
+            />
+          )}
+          
+          {/* Desktop */}
+          {bgDesktop && (
+            <Image
+              src={bgDesktop}
+              alt="Background Desktop"
+              fill
+              priority
+              quality={85}
+              className="hidden md:block object-cover"
+              style={{ filter: 'brightness(0.6)' }}
+              sizes="100vw"
+            />
+          )}
+          
+          {/* Overlay oscuro */}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
 
         {/* CONTENIDO - Dentro del max-w-7xl */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
