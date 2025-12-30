@@ -28,6 +28,8 @@ export default async function Home({ params, searchParams }: HomePageProps) {
   
   // Logo
   const logo = settings?.logo;
+  const bgMobile = settings?.backgroundImageMobile || '/images/fondomobile.jpg'
+  const bgDesktop = settings?.backgroundImageDesktop || '/images/fondodesktop.jpg'
   
   const success = sp.success === 'true';
   const error = sp.error;
@@ -77,6 +79,15 @@ export default async function Home({ params, searchParams }: HomePageProps) {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="relative space-y-8">
+            {/* Fondo global */}
+            <div className="absolute inset-0 -z-10 overflow-hidden">
+              <div className="absolute inset-0 md:hidden bg-cover bg-center" 
+                style={{ backgroundImage: `url(${bgMobile})` }} />
+              <div className="absolute inset-0 hidden md:block bg-cover bg-center" 
+                style={{ backgroundImage: `url(${bgDesktop})` }} />
+              <div className="absolute inset-0 bg-black/40" />
+            </div>
         {!session ? (
           <div className="text-center space-y-6">
             <h2 className="text-5xl font-bold text-gray-900 dark:text-white">
@@ -108,6 +119,7 @@ export default async function Home({ params, searchParams }: HomePageProps) {
             </p>
           </div>
         )}
+        </div>
       </main>
     </div>
   );

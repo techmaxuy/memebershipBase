@@ -512,8 +512,6 @@ const handleBackgroundDesktopDelete = async () => {
             </div>
           </div>
 
-            // agregar una linea divisoria
-
           <hr className="my-6 border-gray-200 dark:border-zinc-700" />
 
           <div className="flex items-center gap-3 mb-6">
