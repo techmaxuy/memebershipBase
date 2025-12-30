@@ -34,6 +34,11 @@ export default async function Home({ params, searchParams }: HomePageProps) {
   const success = sp.success === 'true';
   const error = sp.error;
 
+    // ANTES del return, añade esto:
+  console.log('🔍 Mobile BG:', bgMobile)
+  console.log('🔍 Desktop BG:', bgDesktop)
+  console.log('🔍 Session:', session ? 'logged in' : 'guest')
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-black dark:via-zinc-900 dark:to-black">
       {success && (
