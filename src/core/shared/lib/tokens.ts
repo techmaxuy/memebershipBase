@@ -84,7 +84,7 @@ export async function consumeTokens(
           tokensUsed: amount,
           operation,
           aiConfigId,
-          metadata: metadata ?? undefined,
+          metadata: metadata ?JSON.parse(JSON.stringify(metadata)) : null,
         },
       }),
     ])
