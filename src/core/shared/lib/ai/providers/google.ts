@@ -67,37 +67,21 @@ export async function generateWithGoogle(options: GoogleRequestOptions): Promise
   }
 }
 
-export async function testGoogleConnection(apiKey: string): Promise<{ success: boolean; error?: string }> {
+export async function testGoogleConnection(apiKey: string, defaultModel: string): Promise<{ success: boolean; error?: string }> {
   try {
-    // Intentamos inicializar el cliente de forma más explícita
-    const genAI = new GoogleGenerativeAI(apiKey);
-    
-    // IMPORTANTE: Usa 'gemini-1.5-flash' sin prefijos extra primero
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const genAI = new GoogleGenerativeAI(apiKey)
+    // Usamos el nombre base que suele ser el más compatible para tests
+    const model = genAI.getGenerativeModel({ model: defaultModel })
 
-    // Añadimos un timeout manual para evitar esperas infinitas
-    const result = await model.generateContent("Hello");
-    const response = await result.response;
+    const result = await model.generateContent('Hi')
+    const response = await result.response
+    const text = response.text()
     
-    if (response.text()) {
-      return { success: true };
-    }
-    
-    return { success: false, error: 'Respuesta vacía del servidor' };
+    return { success: !!text }
   } catch (error: any) {
-    console.error('[Google Test Error]:', error);
-    
-    // Si el error es 404 de nuevo, intentamos con el modelo antiguo como último recurso
-    if (error.message.includes('404')) {
-        return { 
-            success: false, 
-            error: "Error 404: Tu API Key no tiene acceso a este modelo. Revisa en Google Cloud que 'Generative Language API' esté activa." 
-        };
-    }
-
     return {
       success: false,
-      error: `Error de credencial: ${error.message}`,
-    };
+      error: `Error de conexión: ${error.message}`,
+    }
   }
 }

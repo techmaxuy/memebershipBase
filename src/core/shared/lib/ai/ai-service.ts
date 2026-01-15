@@ -123,7 +123,7 @@ export async function testAIConfigConnection(configId: string): Promise<{ succes
         return await testAnthropicConnection(config.apiKey)
 
       case 'GOOGLE':
-        return await testGoogleConnection(config.apiKey)
+        return await testGoogleConnection(config.apiKey,config.defaultModel)
 
       default:
         return { success: false, error: 'UnsupportedProvider' }
@@ -159,7 +159,7 @@ export async function getAvailableModels(provider: AIProvider): Promise<string[]
 
     case 'GOOGLE':
       return [
-        'gemini-1.5-flash-latest', // Intenta este primero
+        'gemini-3-flash-preview', // Intenta este primero
     'gemini-1.5-pro-latest',
     'gemini-pro',
       ]
