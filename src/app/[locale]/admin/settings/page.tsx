@@ -2,6 +2,10 @@ import { requireAdmin } from '@/core/auth/lib/auth-helpers'
 import { getSettings } from '@/core/admin/actions/settings'
 import { getTranslations } from 'next-intl/server'
 import { SettingsForm } from '@/core/admin/components/SettingsForm'
+import { SubscriptionSection } from '@/core/admin/components/SubscriptionSection'
+import { AIConfigSection } from '@/core/admin/components/AIConfigSection'
+import { PaymentGatewaySection } from '@/core/admin/components/PaymentGatewaySection'
+import { PendingPaymentsSection } from '@/core/admin/components/PendingPaymentsSection'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 
@@ -58,8 +62,20 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <SettingsForm settings={settings} locale={locale} />
+
+        {/* AI Configuration */}
+        <AIConfigSection />
+
+        {/* Subscription Plans */}
+        <SubscriptionSection />
+
+        {/* Payment Gateways */}
+        <PaymentGatewaySection />
+
+        {/* Pending Payments */}
+        <PendingPaymentsSection />
       </div>
     </div>
   )

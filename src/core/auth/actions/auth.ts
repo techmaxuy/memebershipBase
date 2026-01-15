@@ -124,12 +124,37 @@ export const register = async (values: z.infer<typeof RegisterSchema>, locale: s
         // Enviar email de verificación
         await sendVerificationEmail(email, verificationToken, locale)
 
+        // Asignar suscripción free automáticamente
+        try {
+            const freePlan = await prisma.subscriptionPlan.findFirst({
+                where: { name: 'free' }
+            })
+
+            if (freePlan) {
+                const nextMonth = new Date()
+                nextMonth.setMonth(nextMonth.getMonth() + 1)
+
+                await prisma.userSubscription.create({
+                    data: {
+                        userId: user.id,
+                        planId: freePlan.id,
+                        tokensRemaining: freePlan.tokens,
+                        tokensUsed: 0,
+                        renewalDate: nextMonth,
+                    }
+                })
+                console.log(`[Register] ✅ Free subscription assigned to: ${email}`)
+            }
+        } catch (subscriptionError) {
+            console.warn('[Register] ⚠️ Could not assign free subscription:', subscriptionError)
+        }
+
         console.log(`[Register] ✅ User created, verification email sent to: ${email}`)
 
-        return { 
+        return {
             success: "UserCreated",
             requiresVerification: true,
-            email 
+            email
         }
     } catch (dbError) {
         console.error("[Register] Database error creating user:", dbError)

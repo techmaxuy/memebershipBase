@@ -12,6 +12,18 @@ enum Role {
   ADMIN
 }
 
+enum AIProvider {
+  OPENAI
+  ANTHROPIC
+  GOOGLE
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -20,9 +32,13 @@ model User {
   image         String?
   password      String?
   role          Role      @default(USER)
+  country       String?
   accounts      Account[]
   sessions      Session[]
- 
+  subscription  UserSubscription?
+  tokenUsage    TokenUsage[]
+  payments      Payment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -75,7 +91,100 @@ model Settings {
   favicon               String?
   defaultLocale         String   @default("en")
   backgroundImageMobile   String?
-  backgroundImageDesktop  String? 
+  backgroundImageDesktop  String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+}
+
+// Configuración de APIs de IA
+model AIConfig {
+  id            String     @id @default(cuid())
+  name          String
+  provider      AIProvider
+  apiKey        String
+  defaultModel  String
+  isActive      Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+// Planes de Suscripción
+model SubscriptionPlan {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  displayNameEn   String
+  displayNameEs   String
+  tokens          Int
+  price           Float
+  additionalLimit Int      @default(0)
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions   UserSubscription[]
+}
+
+// Suscripción de Usuario
+model UserSubscription {
+  id              String            @id @default(cuid())
+  userId          String            @unique
+  planId          String
+  tokensUsed      Int               @default(0)
+  tokensRemaining Int               @default(0)
+  startDate       DateTime          @default(now())
+  renewalDate     DateTime
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan            SubscriptionPlan  @relation(fields: [planId], references: [id])
+}
+
+// Registro de Uso de Tokens
+model TokenUsage {
+  id          String   @id @default(cuid())
+  userId      String
+  tokensUsed  Int
+  operation   String
+  aiConfigId  String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Pasarelas de Pago por País
+model PaymentGateway {
+  id           String   @id @default(cuid())
+  countryCode  String
+  countryName  String
+  gatewayName  String
+  qrImage      String?
+  instructions String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  payments     Payment[]
+}
+
+// Registro de Pagos
+model Payment {
+  id              String        @id @default(cuid())
+  userId          String
+  planId          String
+  gatewayId       String
+  amount          Float
+  currency        String        @default("USD")
+  status          PaymentStatus @default(PENDING)
+  receiptImage    String?
+  adminNotes      String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gateway         PaymentGateway @relation(fields: [gatewayId], references: [id])
 }

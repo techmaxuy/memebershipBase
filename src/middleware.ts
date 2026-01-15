@@ -70,7 +70,17 @@ export default auth(async (req) => {
     
     
     // Aplicar middleware de internacionalización
-    return intlMiddleware(req as any)
+    const response = intlMiddleware(req as any)
+
+    // Detectar país desde headers de Vercel y guardar en cookie
+    const country = req.headers.get('x-vercel-ip-country') || 'US'
+    response.cookies.set('user-country', country, {
+        httpOnly: true,
+        maxAge: 86400, // 1 día
+        sameSite: 'lax',
+    })
+
+    return response
 })
 
 export const config = {
