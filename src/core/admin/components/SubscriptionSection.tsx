@@ -82,7 +82,7 @@ export function SubscriptionSection() {
         resetForm()
         loadPlans()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`)  || result.error || t('errors.createFailed')})
       }
     })
   }
@@ -98,7 +98,7 @@ export function SubscriptionSection() {
         resetForm()
         loadPlans()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || t('errors.updateFailed') })
       }
     })
   }
@@ -112,7 +112,7 @@ export function SubscriptionSection() {
         setMessage({ type: 'success', text: t('planDeleted') })
         loadPlans()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || t('errors.deleteFailed') })
       }
     })
   }
