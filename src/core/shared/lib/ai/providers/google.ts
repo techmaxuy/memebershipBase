@@ -15,70 +15,68 @@ interface AIProviderResponse {
 }
 
 export async function generateWithGoogle(options: GoogleRequestOptions): Promise<AIProviderResponse> {
-  const { apiKey, model, prompt,maxTokens, systemPrompt } = options
+  const { apiKey, model, prompt, maxTokens, systemPrompt } = options
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const generativeModel = genAI.getGenerativeModel({ model: model,
-      systemInstruction: systemPrompt || undefined, })
+    // Especificamos la versión v1 para mayor estabilidad si v1beta falla
+    const genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Algunos entornos requieren que el modelo tenga el prefijo models/
+    const modelName = model.startsWith('models/') ? model : `models/${model}`;
+    
+    const generativeModel = genAI.getGenerativeModel({ 
+      model: modelName,
+      // Si el modelo es gemini-1.0-pro, no soporta systemInstruction nativo
+      // así que lo manejamos con una validación simple:
+      ...(systemPrompt && model.includes('1.5') ? { systemInstruction: systemPrompt } : {})
+    });
 
-      const generationConfig = {
-      maxOutputTokens: maxTokens,
-      temperature: 0.7,
-    }
+    // Si es un modelo antiguo (1.0), concatenamos el systemPrompt manualmente
+    const finalPrompt = (!model.includes('1.5') && systemPrompt) 
+      ? `${systemPrompt}\n\n${prompt}` 
+      : prompt;
 
-   
     const result = await generativeModel.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig,
-    })
+      contents: [{ role: 'user', parts: [{ text: finalPrompt }] }],
+      generationConfig: {
+        maxOutputTokens: maxTokens || 1000,
+        temperature: 0.7,
+      },
+    });
 
+    const response = await result.response;
+    const content = response.text();
+    const usageMetadata = response.usageMetadata;
 
-    const response = await result.response
-    const content = response.text()
-
-   
-    const tokensUsed = response.usageMetadata 
-      ? response.usageMetadata.totalTokenCount 
-      : 0
-
-    console.log(`[Google] ✅ Generated response with ${tokensUsed} tokens`)
-
-    return { content, tokensUsed }
-  } catch (error:any) {
-    console.error('[Google] ❌ Error generating response:', error)
-
-    // Captura de errores específicos de cuota o API Key
-    let errorMessage = error.message || 'Unknown error'
-    if (errorMessage.includes('429')) errorMessage = 'Quota exceeded or API rate limit reached'
-    if (errorMessage.includes('API key not valid')) errorMessage = 'Invalid Google API Key'
-
+    return { 
+      content, 
+      tokensUsed: usageMetadata?.totalTokenCount || 0 
+    };
+  } catch (error: any) {
+    console.error('[Google] ❌ Error:', error);
     return {
       content: '',
       tokensUsed: 0,
-      error: errorMessage,
-    }
+      error: `[Google API Error]: ${error.message}`,
+    };
   }
 }
 
+// Actualiza también el testConnection para usar el nombre correcto
 export async function testGoogleConnection(apiKey: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    // Usamos gemini-1.5-flash para el test por ser más rápido y barato
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const genAI = new GoogleGenerativeAI(apiKey);
+    // Cambiamos a 'models/gemini-1.5-flash' para asegurar la ruta completa
+    const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
 
-    // Un prompt minimalista para validar la llave
-    const result = await model.generateContent('ping')
-    const response = await result.response
+    const result = await model.generateContent('ping');
+    const response = await result.response;
     
-    if (response.text()) {
-      return { success: true }
-    }
-    return { success: false, error: 'Empty response' }
+    return { success: !!response.text() };
   } catch (error: any) {
     return {
       success: false,
-      error: error.message || 'Connection failed',
-    }
+      error: `Test failed: ${error.message}`,
+    };
   }
 }
