@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai'
 
 interface GoogleRequestOptions {
   apiKey: string
@@ -15,30 +15,48 @@ interface AIProviderResponse {
 }
 
 export async function generateWithGoogle(options: GoogleRequestOptions): Promise<AIProviderResponse> {
-  const { apiKey, model, prompt, systemPrompt } = options
+  const { apiKey, model, prompt,maxTokens, systemPrompt } = options
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
-    const generativeModel = genAI.getGenerativeModel({ model })
+    const generativeModel = genAI.getGenerativeModel({ model: model,
+      systemInstruction: systemPrompt || undefined, })
 
-    const fullPrompt = systemPrompt ? `${systemPrompt}\n\n${prompt}` : prompt
+      const generationConfig = {
+      maxOutputTokens: maxTokens,
+      temperature: 0.7,
+    }
 
-    const result = await generativeModel.generateContent(fullPrompt)
+   
+    const result = await generativeModel.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig,
+    })
+
+
     const response = await result.response
     const content = response.text()
 
-    const usageMetadata = response.usageMetadata
-    const tokensUsed = (usageMetadata?.promptTokenCount || 0) + (usageMetadata?.candidatesTokenCount || 0)
+   
+    const tokensUsed = response.usageMetadata 
+      ? response.usageMetadata.totalTokenCount 
+      : 0
 
     console.log(`[Google] ✅ Generated response with ${tokensUsed} tokens`)
 
     return { content, tokensUsed }
-  } catch (error) {
+  } catch (error:any) {
     console.error('[Google] ❌ Error generating response:', error)
+
+    // Captura de errores específicos de cuota o API Key
+    let errorMessage = error.message || 'Unknown error'
+    if (errorMessage.includes('429')) errorMessage = 'Quota exceeded or API rate limit reached'
+    if (errorMessage.includes('API key not valid')) errorMessage = 'Invalid Google API Key'
+
     return {
       content: '',
       tokensUsed: 0,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: errorMessage,
     }
   }
 }
@@ -46,17 +64,21 @@ export async function generateWithGoogle(options: GoogleRequestOptions): Promise
 export async function testGoogleConnection(apiKey: string): Promise<{ success: boolean; error?: string }> {
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    // Usamos gemini-1.5-flash para el test por ser más rápido y barato
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
-    await model.generateContent('Hi')
-
-    console.log('[Google] ✅ Connection test successful')
-    return { success: true }
-  } catch (error) {
-    console.error('[Google] ❌ Connection test failed:', error)
+    // Un prompt minimalista para validar la llave
+    const result = await model.generateContent('ping')
+    const response = await result.response
+    
+    if (response.text()) {
+      return { success: true }
+    }
+    return { success: false, error: 'Empty response' }
+  } catch (error: any) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error.message || 'Connection failed',
     }
   }
 }
