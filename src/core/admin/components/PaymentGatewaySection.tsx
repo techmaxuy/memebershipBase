@@ -79,7 +79,7 @@ export function PaymentGatewaySection() {
         resetForm()
         loadGateways()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || t('errors.createFailed')})
       }
     })
   }
@@ -95,7 +95,7 @@ export function PaymentGatewaySection() {
         resetForm()
         loadGateways()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || t('errors.updateFailed')})
       }
     })
   }
@@ -109,7 +109,7 @@ export function PaymentGatewaySection() {
         setMessage({ type: 'success', text: t('gatewayDeleted') })
         loadGateways()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || t('errors.deleteFailed')})
       }
     })
   }
