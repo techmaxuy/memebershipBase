@@ -474,5 +474,61 @@
     "noSubscription": "No active subscription",
     "insufficientTokens": "Insufficient tokens",
     "upgradeToUse": "Upgrade your plan to use AI features"
+  },
+  "ProfileSubscription": {
+    "title": "Subscription",
+    "currentPlan": "Current Plan",
+    "tokensRemaining": "Tokens Remaining",
+    "tokensUsed": "Tokens Used",
+    "renewalDate": "Renewal Date",
+    "additionalLimit": "Additional Limit",
+    "noSubscription": "You don't have an active subscription",
+    "choosePlan": "Choose a Plan",
+    "upgradePlan": "Upgrade Plan",
+    "changePlan": "Change Plan",
+    "viewHistory": "View History"
+  },
+  "SubscriptionPage": {
+    "title": "Subscription Plans",
+    "description": "Choose the plan that best fits your needs",
+    "backToProfile": "Back to Profile",
+    "currentPlan": "Current",
+    "popular": "Popular",
+    "selectPlan": "Select Plan",
+    "freePlan": "Free",
+    "tokensPerMonth": "tokens per month",
+    "noTokens": "No AI tokens",
+    "additionalLimit": "additional limit",
+    "month": "month",
+    "processing": "Processing...",
+    "errors": {
+      "Unauthorized": "Please sign in to continue",
+      "PlanNotFound": "Plan not found",
+      "FreePlanNoPayment": "Free plan does not require payment",
+      "PendingPaymentExists": "You have a pending payment. Please wait for it to be reviewed.",
+      "NoGatewayAvailable": "No payment gateway available for your country",
+      "DatabaseError": "Database error",
+      "unknown": "An error occurred"
+    }
+  },
+  "PaymentFlow": {
+    "completePayment": "Complete Payment",
+    "paymentSubmitted": "Payment Submitted",
+    "upgradeToText": "Upgrade to",
+    "paymentMethod": "Payment Method",
+    "goToPaymentLink": "Go to Payment Link",
+    "alreadyPaid": "I've already paid",
+    "noPaymentLink": "No payment link available. Please contact support.",
+    "uploadReceipt": "Upload Receipt",
+    "uploadReceiptDescription": "Upload a screenshot or photo of your payment confirmation",
+    "clickToUpload": "Click to upload your receipt",
+    "uploading": "Uploading...",
+    "back": "Back",
+    "receiptSubmitted": "Receipt Submitted!",
+    "pendingReviewDescription": "Your payment is being reviewed. We'll notify you once it's approved.",
+    "done": "Done",
+    "errors": {
+      "uploadFailed": "Failed to upload receipt. Please try again."
+    }
   }
 }

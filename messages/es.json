@@ -482,5 +482,61 @@
     "noSubscription": "Sin suscripción activa",
     "insufficientTokens": "Tokens insuficientes",
     "upgradeToUse": "Mejora tu plan para usar funciones de IA"
+  },
+  "ProfileSubscription": {
+    "title": "Suscripción",
+    "currentPlan": "Plan Actual",
+    "tokensRemaining": "Tokens Restantes",
+    "tokensUsed": "Tokens Usados",
+    "renewalDate": "Fecha de Renovación",
+    "additionalLimit": "Límite Adicional",
+    "noSubscription": "No tienes una suscripción activa",
+    "choosePlan": "Elegir un Plan",
+    "upgradePlan": "Mejorar Plan",
+    "changePlan": "Cambiar Plan",
+    "viewHistory": "Ver Historial"
+  },
+  "SubscriptionPage": {
+    "title": "Planes de Suscripción",
+    "description": "Elige el plan que mejor se adapte a tus necesidades",
+    "backToProfile": "Volver al Perfil",
+    "currentPlan": "Actual",
+    "popular": "Popular",
+    "selectPlan": "Seleccionar Plan",
+    "freePlan": "Gratis",
+    "tokensPerMonth": "tokens por mes",
+    "noTokens": "Sin tokens de IA",
+    "additionalLimit": "límite adicional",
+    "month": "mes",
+    "processing": "Procesando...",
+    "errors": {
+      "Unauthorized": "Por favor inicia sesión para continuar",
+      "PlanNotFound": "Plan no encontrado",
+      "FreePlanNoPayment": "El plan gratuito no requiere pago",
+      "PendingPaymentExists": "Tienes un pago pendiente. Por favor espera a que sea revisado.",
+      "NoGatewayAvailable": "No hay pasarela de pago disponible para tu país",
+      "DatabaseError": "Error de base de datos",
+      "unknown": "Ocurrió un error"
+    }
+  },
+  "PaymentFlow": {
+    "completePayment": "Completar Pago",
+    "paymentSubmitted": "Pago Enviado",
+    "upgradeToText": "Mejorar a",
+    "paymentMethod": "Método de Pago",
+    "goToPaymentLink": "Ir al Enlace de Pago",
+    "alreadyPaid": "Ya realicé el pago",
+    "noPaymentLink": "No hay enlace de pago disponible. Por favor contacta soporte.",
+    "uploadReceipt": "Subir Comprobante",
+    "uploadReceiptDescription": "Sube una captura de pantalla o foto de tu confirmación de pago",
+    "clickToUpload": "Haz clic para subir tu comprobante",
+    "uploading": "Subiendo...",
+    "back": "Volver",
+    "receiptSubmitted": "¡Comprobante Enviado!",
+    "pendingReviewDescription": "Tu pago está siendo revisado. Te notificaremos cuando sea aprobado.",
+    "done": "Listo",
+    "errors": {
+      "uploadFailed": "Error al subir el comprobante. Por favor intenta de nuevo."
+    }
   }
 }

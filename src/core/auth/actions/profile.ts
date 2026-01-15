@@ -55,6 +55,26 @@ export async function getCurrentProfile() {
             provider: true,
           },
         },
+        subscription: {
+          select: {
+            id: true,
+            tokensUsed: true,
+            tokensRemaining: true,
+            startDate: true,
+            renewalDate: true,
+            plan: {
+              select: {
+                id: true,
+                name: true,
+                displayNameEn: true,
+                displayNameEs: true,
+                tokens: true,
+                price: true,
+                additionalLimit: true,
+              },
+            },
+          },
+        },
       },
     })
 

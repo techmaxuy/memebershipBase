@@ -6,7 +6,8 @@ import { AvatarUpload } from '@/core/profile/components/AvatarUpload'
 import { EditNameForm } from '@/core/profile/components/EditNameForm'
 import { ChangePasswordForm } from '@/core/profile/components/ChangePasswordForm'
 import { ChangeEmailForm } from '@/core/profile/components/ChangeEmailForm'
-import { Shield, Calendar, Mail, User as UserIcon, ExternalLink } from 'lucide-react'
+import { SubscriptionCard } from '@/core/profile/components/SubscriptionCard'
+import { Shield, Calendar, Mail, User as UserIcon } from 'lucide-react'
 import Link from 'next/link'
 import { LogoutButton } from '@/core/auth/components/LogoutButton'
 
@@ -156,6 +157,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Subscription */}
+        <div className="mt-6">
+          <SubscriptionCard subscription={user.subscription} locale={locale} />
         </div>
 
         {/* Actions */}
