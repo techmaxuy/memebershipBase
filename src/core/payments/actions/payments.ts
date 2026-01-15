@@ -16,7 +16,7 @@ interface PaymentRequestResult {
   gateway?: {
     id: string
     gatewayName: string
-    qrImage: string | null
+    paymentLink: string | null
     instructions: string | null
   }
   plan?: {
@@ -101,7 +101,7 @@ export async function createPaymentRequest(planId: string): Promise<PaymentReque
       gateway: {
         id: gateway.id,
         gatewayName: gateway.gatewayName,
-        qrImage: gateway.qrImage,
+        paymentLink: gateway.paymentLink,
         instructions: gateway.instructions,
       },
       plan: {

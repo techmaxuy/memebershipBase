@@ -160,7 +160,7 @@ model PaymentGateway {
   countryCode  String
   countryName  String
   gatewayName  String
-  qrImage      String?
+  paymentLink  String?
   instructions String?
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())

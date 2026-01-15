@@ -386,10 +386,8 @@
     "gatewayName": "Gateway Name",
     "instructions": "Payment Instructions",
     "instructionsPlaceholder": "Instructions for the user on how to complete the payment",
-    "uploadQR": "Upload QR",
-    "deleteQR": "Delete QR",
-    "qrUploaded": "QR code uploaded successfully",
-    "qrDeleted": "QR code deleted successfully",
+    "paymentLink": "Payment Link",
+    "viewPaymentLink": "View Payment Link",
     "isActive": "Active",
     "active": "Active",
     "inactive": "Inactive",
@@ -399,7 +397,6 @@
     "gatewayDeleted": "Gateway deleted successfully",
     "noGateways": "No payment gateways configured yet",
     "confirmDelete": "Are you sure you want to delete this gateway?",
-    "confirmDeleteQR": "Are you sure you want to delete this QR code?",
     "create": "Create",
     "save": "Save",
     "cancel": "Cancel",
@@ -413,8 +410,9 @@
       "GatewayHasPayments": "Cannot delete gateway with existing payments",
       "DatabaseError": "Database error",
       "seedFailed": "Failed to create gateway",
-      "uploadFailed": "Failed to upload QR code",
-      "deleteFailed": "Failed to delete QR code"
+      "createFailed": "Failed to create gateway",
+      "updateFailed": "Failed to update gateway",
+      "deleteFailed": "Failed to delete gateway"
     }
   },
   "PendingPayments": {
@@ -445,7 +443,7 @@
     "selectPlan": "Select a Plan",
     "currentPlan": "Current Plan",
     "upgradePlan": "Upgrade Plan",
-    "scanQR": "Scan QR to Pay",
+    "goToPaymentLink": "Go to Payment Link",
     "paymentInstructions": "Payment Instructions",
     "uploadReceipt": "Upload Payment Receipt",
     "uploadReceiptDescription": "After completing the payment, upload your receipt for verification",

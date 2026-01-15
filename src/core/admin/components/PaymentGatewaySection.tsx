@@ -2,9 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
-import { Banknote, Plus, Edit2, Trash2, Loader2, Check, X, Upload, QrCode } from 'lucide-react'
-import Image from 'next/image'
+import { Banknote, Plus, Edit2, Trash2, Loader2, Check, X, ExternalLink, Link2 } from 'lucide-react'
 import {
   getPaymentGateways,
   createPaymentGateway,
@@ -18,13 +16,12 @@ interface PaymentGateway {
   countryCode: string
   countryName: string
   gatewayName: string
-  qrImage: string | null
+  paymentLink: string | null
   instructions: string | null
   isActive: boolean
 }
 
 export function PaymentGatewaySection() {
-  const router = useRouter()
   const t = useTranslations('PaymentGateways')
   const [isPending, startTransition] = useTransition()
 
@@ -33,12 +30,12 @@ export function PaymentGatewaySection() {
   const [editingGateway, setEditingGateway] = useState<PaymentGateway | null>(null)
   const [isCreating, setIsCreating] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [uploadingQR, setUploadingQR] = useState(false)
 
   const [formData, setFormData] = useState({
     countryCode: '',
     countryName: '',
     gatewayName: '',
+    paymentLink: '',
     instructions: '',
     isActive: true,
   })
@@ -72,7 +69,11 @@ export function PaymentGatewaySection() {
   const handleCreate = async () => {
     setMessage(null)
     startTransition(async () => {
-      const result = await createPaymentGateway(formData)
+      const dataToSend = {
+        ...formData,
+        paymentLink: formData.paymentLink || null,
+      }
+      const result = await createPaymentGateway(dataToSend)
       if (result.success) {
         setMessage({ type: 'success', text: t('gatewayCreated') })
         setIsCreating(false)
@@ -88,7 +89,11 @@ export function PaymentGatewaySection() {
     if (!editingGateway) return
     setMessage(null)
     startTransition(async () => {
-      const result = await updatePaymentGateway(editingGateway.id, formData)
+      const dataToSend = {
+        ...formData,
+        paymentLink: formData.paymentLink || null,
+      }
+      const result = await updatePaymentGateway(editingGateway.id, dataToSend)
       if (result.success) {
         setMessage({ type: 'success', text: t('gatewayUpdated') })
         setEditingGateway(null)
@@ -114,70 +119,13 @@ export function PaymentGatewaySection() {
     })
   }
 
-  const handleQRUpload = async (e: React.ChangeEvent<HTMLInputElement>, gatewayId: string) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setUploadingQR(true)
-    setMessage(null)
-
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('gatewayId', gatewayId)
-
-    try {
-      const response = await fetch('/api/upload/payment-qr', {
-        method: 'POST',
-        body: formData,
-      })
-
-      const result = await response.json()
-
-      if (!response.ok || result.error) {
-        setMessage({ type: 'error', text: result.error || t('errors.uploadFailed') })
-      } else {
-        setMessage({ type: 'success', text: t('qrUploaded') })
-        loadGateways()
-      }
-    } catch {
-      setMessage({ type: 'error', text: t('errors.uploadFailed') })
-    }
-
-    setUploadingQR(false)
-  }
-
-  const handleQRDelete = async (gatewayId: string) => {
-    if (!confirm(t('confirmDeleteQR'))) return
-
-    setUploadingQR(true)
-    setMessage(null)
-
-    try {
-      const response = await fetch(`/api/upload/payment-qr?gatewayId=${gatewayId}`, {
-        method: 'DELETE',
-      })
-
-      const result = await response.json()
-
-      if (!response.ok || result.error) {
-        setMessage({ type: 'error', text: result.error || t('errors.deleteFailed') })
-      } else {
-        setMessage({ type: 'success', text: t('qrDeleted') })
-        loadGateways()
-      }
-    } catch {
-      setMessage({ type: 'error', text: t('errors.deleteFailed') })
-    }
-
-    setUploadingQR(false)
-  }
-
   const startEdit = (gateway: PaymentGateway) => {
     setEditingGateway(gateway)
     setFormData({
       countryCode: gateway.countryCode,
       countryName: gateway.countryName,
       gatewayName: gateway.gatewayName,
+      paymentLink: gateway.paymentLink || '',
       instructions: gateway.instructions || '',
       isActive: gateway.isActive,
     })
@@ -195,6 +143,7 @@ export function PaymentGatewaySection() {
       countryCode: '',
       countryName: '',
       gatewayName: '',
+      paymentLink: '',
       instructions: '',
       isActive: true,
     })
@@ -303,6 +252,16 @@ export function PaymentGatewaySection() {
               <label htmlFor="gatewayIsActive" className="text-sm font-medium">{t('isActive')}</label>
             </div>
             <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1">{t('paymentLink')}</label>
+              <input
+                type="url"
+                value={formData.paymentLink}
+                onChange={(e) => setFormData({ ...formData, paymentLink: e.target.value })}
+                className="w-full px-3 py-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600"
+                placeholder="https://link.mercadopago.com.uy/..."
+              />
+            </div>
+            <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-1">{t('instructions')}</label>
               <textarea
                 value={formData.instructions}
@@ -346,56 +305,14 @@ export function PaymentGatewaySection() {
           {gateways.map((gateway) => (
             <div
               key={gateway.id}
-              className="border dark:border-zinc-700 rounded-lg p-4 flex flex-col md:flex-row gap-4"
+              className="border dark:border-zinc-700 rounded-lg p-4"
             >
-              <div className="flex-shrink-0">
-                {gateway.qrImage ? (
-                  <div className="relative w-32 h-32 bg-gray-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
-                    <Image src={gateway.qrImage} alt="QR Code" fill className="object-contain p-2" />
-                    <button
-                      onClick={() => handleQRDelete(gateway.id)}
-                      disabled={uploadingQR}
-                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-                      title={t('deleteQR')}
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="relative w-32 h-32">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleQRUpload(e, gateway.id)}
-                      disabled={uploadingQR}
-                      className="hidden"
-                      id={`qr-upload-${gateway.id}`}
-                    />
-                    <label
-                      htmlFor={`qr-upload-${gateway.id}`}
-                      className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-300 dark:border-zinc-600 rounded-lg cursor-pointer hover:border-blue-500"
-                    >
-                      {uploadingQR ? (
-                        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-                      ) : (
-                        <>
-                          <QrCode className="w-6 h-6 text-gray-400 mb-1" />
-                          <span className="text-xs text-gray-500">{t('uploadQR')}</span>
-                        </>
-                      )}
-                    </label>
-                  </div>
-                )}
-              </div>
-              <div className="flex-grow">
-                <div className="flex items-start justify-between">
-                  <div>
+              <div className="flex items-start justify-between">
+                <div className="flex-grow">
+                  <div className="flex items-center gap-3 mb-2">
                     <h3 className="font-medium text-lg">
                       {gateway.countryName} ({gateway.countryCode})
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{gateway.gatewayName}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
                         gateway.isActive
@@ -405,25 +322,44 @@ export function PaymentGatewaySection() {
                     >
                       {gateway.isActive ? t('active') : t('inactive')}
                     </span>
-                    <button
-                      onClick={() => startEdit(gateway)}
-                      className="p-1 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded"
-                      title={t('edit')}
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(gateway.id)}
-                      className="p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600"
-                      title={t('delete')}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
                   </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{gateway.gatewayName}</p>
+
+                  {gateway.paymentLink && (
+                    <div className="flex items-center gap-2 mb-2">
+                      <Link2 className="w-4 h-4 text-blue-500" />
+                      <a
+                        href={gateway.paymentLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                      >
+                        {t('viewPaymentLink')}
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  )}
+
+                  {gateway.instructions && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{gateway.instructions}</p>
+                  )}
                 </div>
-                {gateway.instructions && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{gateway.instructions}</p>
-                )}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => startEdit(gateway)}
+                    className="p-1 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded"
+                    title={t('edit')}
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(gateway.id)}
+                    className="p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600"
+                    title={t('delete')}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

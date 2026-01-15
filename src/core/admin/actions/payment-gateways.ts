@@ -9,7 +9,7 @@ const PaymentGatewaySchema = z.object({
   countryCode: z.string().min(2).max(3),
   countryName: z.string().min(1).max(100),
   gatewayName: z.string().min(1).max(100),
-  qrImage: z.string().url().optional().nullable(),
+  paymentLink: z.string().url().optional().nullable(),
   instructions: z.string().max(1000).optional().nullable(),
   isActive: z.boolean().default(true),
 })
@@ -225,7 +225,7 @@ export async function seedUruguayGateway() {
         countryCode: 'UY',
         countryName: 'Uruguay',
         gatewayName: 'MercadoPago',
-        instructions: 'Escanea el código QR con tu app de MercadoPago para realizar el pago. Una vez realizado, sube el comprobante para verificación.',
+        instructions: 'Haz clic en el enlace de pago de MercadoPago para realizar el pago. Una vez realizado, sube el comprobante para verificación.',
         isActive: true,
       },
     })
