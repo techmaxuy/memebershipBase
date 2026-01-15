@@ -18,65 +18,70 @@ export async function generateWithGoogle(options: GoogleRequestOptions): Promise
   const { apiKey, model, prompt, maxTokens, systemPrompt } = options
 
   try {
-    // Especificamos la versión v1 para mayor estabilidad si v1beta falla
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const genAI = new GoogleGenerativeAI(apiKey)
     
-    // Algunos entornos requieren que el modelo tenga el prefijo models/
-    const modelName = model.startsWith('models/') ? model : `models/${model}`;
+    // SOLUCIÓN AL 404: Asegurar el formato 'models/nombre-del-modelo'
+    const modelId = model.startsWith('models/') ? model : `models/${model}`
+    
+    // Configuración avanzada para modelos 1.5
+    const isModel15 = model.includes('1.5')
     
     const generativeModel = genAI.getGenerativeModel({ 
-      model: modelName,
-      // Si el modelo es gemini-1.0-pro, no soporta systemInstruction nativo
-      // así que lo manejamos con una validación simple:
-      ...(systemPrompt && model.includes('1.5') ? { systemInstruction: systemPrompt } : {})
-    });
+      model: modelId,
+      // Solo enviamos systemInstruction si es Gemini 1.5
+      ...(isModel15 && systemPrompt ? { systemInstruction: systemPrompt } : {})
+    })
 
-    // Si es un modelo antiguo (1.0), concatenamos el systemPrompt manualmente
-    const finalPrompt = (!model.includes('1.5') && systemPrompt) 
+    const generationConfig = {
+      maxOutputTokens: maxTokens || 1000,
+      temperature: 0.7,
+      topP: 0.95,
+    }
+
+    // Si NO es 1.5, concatenamos el systemPrompt manualmente como respaldo
+    const finalPrompt = (!isModel15 && systemPrompt) 
       ? `${systemPrompt}\n\n${prompt}` 
-      : prompt;
+      : prompt
 
     const result = await generativeModel.generateContent({
       contents: [{ role: 'user', parts: [{ text: finalPrompt }] }],
-      generationConfig: {
-        maxOutputTokens: maxTokens || 1000,
-        temperature: 0.7,
-      },
-    });
+      generationConfig,
+    })
 
-    const response = await result.response;
-    const content = response.text();
-    const usageMetadata = response.usageMetadata;
+    const response = await result.response
+    const text = response.text()
 
     return { 
-      content, 
-      tokensUsed: usageMetadata?.totalTokenCount || 0 
-    };
+      content: text, 
+      tokensUsed: response.usageMetadata?.totalTokenCount || 0 
+    }
   } catch (error: any) {
-    console.error('[Google] ❌ Error:', error);
+    console.error('[Google] ❌ Error detallado:', error)
     return {
       content: '',
       tokensUsed: 0,
-      error: `[Google API Error]: ${error.message}`,
-    };
+      error: error.message.includes('404') 
+        ? `Modelo no encontrado (${model}). Intenta con gemini-1.5-flash-latest` 
+        : error.message,
+    }
   }
 }
 
-// Actualiza también el testConnection para usar el nombre correcto
 export async function testGoogleConnection(apiKey: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    // Cambiamos a 'models/gemini-1.5-flash' para asegurar la ruta completa
-    const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
+    const genAI = new GoogleGenerativeAI(apiKey)
+    // Usamos el nombre base que suele ser el más compatible para tests
+    const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' })
 
-    const result = await model.generateContent('ping');
-    const response = await result.response;
+    const result = await model.generateContent('Hi')
+    const response = await result.response
+    const text = response.text()
     
-    return { success: !!response.text() };
+    return { success: !!text }
   } catch (error: any) {
     return {
       success: false,
-      error: `Test failed: ${error.message}`,
-    };
+      error: `Error de conexión: ${error.message}`,
+    }
   }
 }
