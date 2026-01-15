@@ -65,7 +65,7 @@ export function AIConfigSection() {
   const loadConfigs = async () => {
     setLoading(true)
     const result = await getAIConfigs()
-    if (result.success && result.configs) {
+    if ('success' in result && result.success && result.configs) {
       setConfigs(result.configs)
     }
     setLoading(false)
@@ -73,7 +73,7 @@ export function AIConfigSection() {
 
   const loadModels = async (provider: AIProvider) => {
     const result = await getModelsForProvider(provider)
-    if (result.success && result.models) {
+    if ('success' in result && result.success && result.models) {
       setAvailableModels(result.models)
       if (result.models.length > 0 && !formData.defaultModel) {
         setFormData((prev) => ({ ...prev, defaultModel: result.models[0] }))
@@ -85,13 +85,13 @@ export function AIConfigSection() {
     setMessage(null)
     startTransition(async () => {
       const result = await createAIConfig(formData)
-      if (result.success) {
+      if ('success' in result && result.success) {
         setMessage({ type: 'success', text: t('configCreated') })
         setIsCreating(false)
         resetForm()
         loadConfigs()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`)     || result.error || 'Unknown Error'  })
       }
     })
   }
@@ -105,13 +105,13 @@ export function AIConfigSection() {
         delete (updateData as Partial<typeof formData>).apiKey
       }
       const result = await updateAIConfig(editingConfig.id, updateData)
-      if (result.success) {
+      if ('success' in result && result.success) {
         setMessage({ type: 'success', text: t('configUpdated') })
         setEditingConfig(null)
         resetForm()
         loadConfigs()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || 'Unknown Error' })
       }
     })
   }
@@ -121,11 +121,11 @@ export function AIConfigSection() {
     setMessage(null)
     startTransition(async () => {
       const result = await deleteAIConfig(id)
-      if (result.success) {
+      if ('success' in result && result.success) {
         setMessage({ type: 'success', text: t('configDeleted') })
         loadConfigs()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || t('connectionFailed') })
       }
     })
   }
@@ -133,11 +133,12 @@ export function AIConfigSection() {
   const handleTest = async (id: string) => {
     setTestingId(id)
     setMessage(null)
-    const result = await testAIConfig(id)
-    if (result.success) {
+    const result = await testAIConfig(id) 
+    if ('success' in result && result.success) {
       setMessage({ type: 'success', text: t('connectionSuccess') })
-    } else {
-      setMessage({ type: 'error', text: result.error || t('connectionFailed') })
+    }
+     else {
+      setMessage({ type: 'error', text: result.error || t('connectionFailed')   })
     }
     setTestingId(null)
   }
