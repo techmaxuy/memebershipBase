@@ -67,7 +67,7 @@ export function PendingPaymentsSection() {
         setMessage({ type: 'success', text: t('paymentApproved') })
         loadPayments()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || '' })
       }
       setProcessingId(null)
     })
@@ -90,7 +90,7 @@ export function PendingPaymentsSection() {
         setRejectReason('')
         loadPayments()
       } else {
-        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error })
+        setMessage({ type: 'error', text: t(`errors.${result.error}`) || result.error || '' })
       }
       setProcessingId(null)
     })
