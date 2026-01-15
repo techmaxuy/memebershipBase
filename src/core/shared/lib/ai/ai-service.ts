@@ -159,9 +159,9 @@ export async function getAvailableModels(provider: AIProvider): Promise<string[]
 
     case 'GOOGLE':
       return [
-        'gemini-1.5-flash', // Recomendado: rápido y económico
-        'gemini-1.5-pro',   // El más capaz
-        'gemini-1.0-pro',
+        'gemini-1.5-flash-latest', // Intenta este primero
+    'gemini-1.5-pro-latest',
+    'gemini-pro',
       ]
 
     default:
